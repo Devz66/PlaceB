@@ -32,10 +32,18 @@ app.use(express.urlencoded({ extended: true }));
 
 import authRoutes from './routes/authRoutes.js';
 import vehicleRoutes from './routes/vehicleRoutes.js';
+import alertRoutes from './routes/alertRoutes.js';
+import geofenceRoutes from './routes/geofenceRoutes.js';
+import commandRoutes from './routes/commandRoutes.js';
+import telemetryRoutes from './routes/telemetryRoutes.js';
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/alerts', alertRoutes);
+app.use('/api/geofences', geofenceRoutes);
+app.use('/api/commands', commandRoutes);
+app.use('/api/telemetry', telemetryRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Vehicle Tracking API is running' });

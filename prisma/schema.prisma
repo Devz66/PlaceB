@@ -7,6 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -17,6 +18,8 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   vehicles  Vehicle[]
+  geofences Geofence[]
+  commands  Command[]
 }
 
 model Vehicle {
@@ -26,6 +29,9 @@ model Vehicle {
   userId    Int
   user      User       @relation(fields: [userId], references: [id])
   locations Location[]
+  alerts    Alert[]
+  commands  Command[]
+  telemetry Telemetry[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -35,7 +41,56 @@ model Location {
   latitude  Float
   longitude Float
   speed     Float?
+  heading   Float?
   timestamp DateTime @default(now())
   vehicleId Int
   vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+}
+
+model Telemetry {
+  id        Int      @id @default(autoincrement())
+  vehicleId Int
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  timestamp DateTime @default(now())
+  speed     Float?
+  fuelLevel Float?
+  battery   Float?
+  ignition  Boolean?
+  rpm       Int?
+  temp      Float?
+}
+
+model Alert {
+  id        Int      @id @default(autoincrement())
+  type      String   
+  severity  String   
+  status    String   
+  message   String?
+  timestamp DateTime @default(now())
+  vehicleId Int
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+}
+
+model Geofence {
+  id          Int      @id @default(autoincrement())
+  name        String
+  type        String   
+  coordinates Json     
+  color       String?
+  active      Boolean  @default(true)
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Command {
+  id        Int      @id @default(autoincrement())
+  command   String   
+  status    String   
+  vehicleId Int
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  sentAt    DateTime @default(now())
+  executedAt DateTime?
 }
