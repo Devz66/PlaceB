@@ -1,9 +1,12 @@
 import express from 'express';
 import { z } from 'zod';
-import { register, login, forgotPassword } from '../controllers/authController.js';
+import { register, login, forgotPassword, validateToken } from '../controllers/authController.js';
 import { validate } from '../middlewares/validateMiddleware.js';
+import { protect } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
+
+router.get('/validate', protect, validateToken);
 
 /**
  * @swagger

@@ -39,6 +39,26 @@ export const register = async (req, res) => {
   }
 };
 
+export const validateToken = async (req, res) => {
+  // If we reached here, the 'protect' middleware already validated the token
+  // and attached the user to req.user.
+  // We just return the user info.
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { id: true, name: true, email: true }
+    });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ valid: true, user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
