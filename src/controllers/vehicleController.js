@@ -1,16 +1,30 @@
 import prisma from '../utils/prisma.js';
 
+// Helper to calculate distance between two coordinates
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c; // Distance in km
+}
+
 // @desc    Register a new vehicle
 // @route   POST /api/vehicles
 // @access  Private
 export const createVehicle = async (req, res) => {
   try {
-    const { plate, model } = req.body;
+    const { plate, model, driver } = req.body;
 
     const vehicle = await prisma.vehicle.create({
       data: {
         plate,
         model,
+        driver,
         userId: req.user.id,
       },
     });
@@ -33,6 +47,10 @@ export const getVehicles = async (req, res) => {
           take: 1,
           orderBy: { timestamp: 'desc' },
         },
+        telemetry: {
+          take: 1,
+          orderBy: { timestamp: 'desc' },
+        },
       },
     });
 
@@ -51,6 +69,10 @@ export const getVehicleById = async (req, res) => {
       where: { id: parseInt(req.params.id) },
       include: {
         locations: {
+          take: 1,
+          orderBy: { timestamp: 'desc' },
+        },
+        telemetry: {
           take: 1,
           orderBy: { timestamp: 'desc' },
         },

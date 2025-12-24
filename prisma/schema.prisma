@@ -27,6 +27,7 @@ model Vehicle {
   id        Int        @id @default(autoincrement())
   plate     String     @unique
   model     String?
+  driver    String?
   userId    Int
   user      User       @relation(fields: [userId], references: [id])
   locations Location[]
