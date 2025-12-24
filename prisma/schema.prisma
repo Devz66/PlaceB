@@ -20,6 +20,7 @@ model User {
   vehicles  Vehicle[]
   geofences Geofence[]
   commands  Command[]
+  financials Financial[]
 }
 
 model Vehicle {
@@ -93,4 +94,20 @@ model Command {
   user      User     @relation(fields: [userId], references: [id])
   sentAt    DateTime @default(now())
   executedAt DateTime?
+}
+
+model Financial {
+  id          Int      @id @default(autoincrement())
+  type        String   // BOLETO, PIX
+  description String
+  amount      Float
+  dueDate     DateTime?
+  paidAt      DateTime?
+  status      String   // PENDING, PAID, OVERDUE, FAILED
+  barcode     String?
+  url         String?  // PDF or Receipt URL
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

@@ -36,6 +36,7 @@ import alertRoutes from './routes/alertRoutes.js';
 import geofenceRoutes from './routes/geofenceRoutes.js';
 import commandRoutes from './routes/commandRoutes.js';
 import telemetryRoutes from './routes/telemetryRoutes.js';
+import financialRoutes from './routes/financialRoutes.js';
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -44,6 +45,7 @@ app.use('/api/alerts', alertRoutes);
 app.use('/api/geofences', geofenceRoutes);
 app.use('/api/commands', commandRoutes);
 app.use('/api/telemetry', telemetryRoutes);
+app.use('/api/financial', financialRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Vehicle Tracking API is running' });
